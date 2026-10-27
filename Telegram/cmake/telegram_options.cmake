@@ -20,8 +20,9 @@ if (TDESKTOP_API_TEST
 endif()
 
 # PATCH (translate-unlock fork): default to disabling self-updates so the
-# official release build cannot silently replace this custom build.
-option(DESKTOP_APP_DISABLE_AUTOUPDATE "Disable self-updates." ON)
+# official release build cannot silently replace this custom build. Force
+# overrides CI's explicit -D DESKTOP_APP_DISABLE_AUTOUPDATE=OFF.
+set(DESKTOP_APP_DISABLE_AUTOUPDATE ON CACHE BOOL "" FORCE)
 if (DESKTOP_APP_DISABLE_AUTOUPDATE)
     target_compile_definitions(Telegram PRIVATE TDESKTOP_DISABLE_AUTOUPDATE)
 endif()
