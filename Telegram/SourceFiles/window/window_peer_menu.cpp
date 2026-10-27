@@ -1112,7 +1112,6 @@ void Filler::addExportChat() {
 
 void Filler::addTranslate() {
 	if (_peer->translationFlag() != PeerData::TranslationFlag::Disabled
-		|| !_peer->session().premium()
 		|| !Core::App().settings().translateChatEnabled()) {
 		return;
 	}

@@ -1610,33 +1610,21 @@ void LanguageBox::setupTop(not_null<Ui::VerticalLayout*> container) {
 	}
 
 	using namespace rpl::mappers;
-	auto premium = Data::AmPremiumValue(&_controller->session());
 	const auto translateChat = container->add(object_ptr<Ui::SettingsButton>(
 		container,
 		tr::lng_translate_settings_chat(),
-		st::settingsButtonNoIconLocked
+		st::settingsButtonNoIcon
 	))->toggleOn(rpl::merge(
 		rpl::combine(
 			Core::App().settings().translateChatEnabledValue(),
-			rpl::duplicate(premium),
+			rpl::single(true),
 			_1 && _2),
 		_translateChatTurnOff.events()));
 	_translateChatsToggle = translateChat;
-	std::move(premium) | rpl::on_next([=](bool value) {
-		translateChat->setToggleLocked(!value);
-	}, translateChat->lifetime());
 
 	translateChat->toggledValue(
 	) | rpl::filter([=](bool checked) {
-		const auto premium = _controller->session().premium();
-		if (checked && !premium) {
-			ShowPremiumPreviewToBuy(
-				_controller,
-				PremiumFeature::RealTimeTranslation);
-			_translateChatTurnOff.fire(false);
-		}
-		return premium
-			&& (checked != Core::App().settings().translateChatEnabled());
+		return checked != Core::App().settings().translateChatEnabled();
 	}) | rpl::on_next([=](bool checked) {
 		Core::App().settings().setTranslateChatEnabled(checked);
 		Core::App().saveSettingsDelayed();
