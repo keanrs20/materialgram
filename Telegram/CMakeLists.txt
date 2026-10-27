@@ -2686,7 +2686,9 @@ endif()
 
 target_prepare_qrc(Telegram)
 
-if (NOT DESKTOP_APP_DISABLE_AUTOUPDATE AND NOT build_macstore AND NOT build_winstore)
+# PATCH (translate-unlock fork): keep Updater target always built so the
+# upstream CI artifact step can move it, even with DESKTOP_APP_DISABLE_AUTOUPDATE.
+if (NOT build_macstore AND NOT build_winstore)
     add_executable(Updater WIN32)
     init_non_host_target(Updater)
 
